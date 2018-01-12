@@ -78,8 +78,8 @@ public class Robot extends IterativeRobot {
 		double x = joystick.getX();
 		double y = joystick.getY();
 		
-		double R = (x + y) / Math.sqrt(2);
-		double L = (x - y) / Math.sqrt(2);
+		double R = (y - x) / Math.sqrt(2);
+		double L = (y + x) / Math.sqrt(2);
 		
 		speedL = L;
 		speedR = R;
