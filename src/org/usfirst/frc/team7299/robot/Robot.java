@@ -7,21 +7,18 @@
 
 package org.usfirst.frc.team7299.robot;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 
 public class Robot extends IterativeRobot {
 	
-	Compressor compressor = new Compressor();
+	// Compressor compressor = new Compressor();
 	
 	Joystick joystick = new Joystick(0);
 	
-	DoubleSolenoid solenoid1 = new DoubleSolenoid(1,2);
-	DoubleSolenoid solenoid2 = new DoubleSolenoid(3,4);
+	// DoubleSolenoid solenoid1 = new DoubleSolenoid(1,2);
+	// DoubleSolenoid solenoid2 = new DoubleSolenoid(3,4);
 	
 	Spark motorLF = new Spark(0);
 	Spark motorLB = new Spark(1);
@@ -32,48 +29,61 @@ public class Robot extends IterativeRobot {
 	double speedR = 0;
 	double speedComp = 0;
 	
-	final double accel = 0.1;
+	boolean slow = false;
+	
+	final double accel = 1;
 	
 	boolean solenoidOn = false;
 
 	@Override // Before anything
 	public void robotInit() {
+		System.out.println("INITIALIZED ROBOT!!");
+		/*
+		 * ### SOLENOID CODE ###
+		 * 
+		
 		compressor.setClosedLoopControl(true);
 		solenoid1.set(DoubleSolenoid.Value.kReverse);
 		solenoid2.set(DoubleSolenoid.Value.kReverse);
+		 */
 	}
 
-	@Override // Before teleop control
+	@Override // Before autonomous control
 	public void autonomousInit() {}
 
-	@Override // During teleop control
+	@Override // During autonomous control
 	public void autonomousPeriodic() {}
+	
+	@Override // Before teleop control
+	public void teleopInit() {
+		System.out.println("INITIALIZED TELEOP!!");
+	} 
 	
 	@Override // During operator control
 	public void teleopPeriodic() {
-		
-		
-		if (joystick.getRawButtonReleased(1)){
-			if (solenoidOn){
+		/*
+		 *   ### SOLENOID CODE ###
+		 * 
+
+		if(joystick.getRawButtonReleased(1)) {
+			if(solenoidOn){
 				solenoid1.set(DoubleSolenoid.Value.kReverse);
 				solenoid2.set(DoubleSolenoid.Value.kReverse);
-			}
-			else{
+			} else {
 				solenoid1.set(DoubleSolenoid.Value.kForward);
 				solenoid2.set(DoubleSolenoid.Value.kForward);
 			}
 			solenoidOn = !solenoidOn;
 		}
-		
-		
-		if (joystick.getRawButtonReleased(2)) {
-			if (compressor.enabled()) {
+
+		if(joystick.getRawButtonReleased(2)) {
+			if(compressor.enabled()) {
 				compressor.stop();
-			}
-			else {
+			} else {
 				compressor.start();
 			}
 		}
+		*/
 		
 		double x = joystick.getX();
 		double y = joystick.getY();
@@ -81,29 +91,32 @@ public class Robot extends IterativeRobot {
 		double R = (y - x) / Math.sqrt(2);
 		double L = (y + x) / Math.sqrt(2);
 		
+		if(joystick.getRawButtonReleased(4)) {
+			slow = !slow;
+		}
+		double percent = (slow? 50 : 100);
+		/*
+		if(speedR > R) {
+			speedR = Math.round(speedR * 100 - accel) / 100;
+		} else if (speedR < R) {
+			speedR = Math.round(speedR * 100 - accel) / 100;
+		}
+
+		if(speedL > L) {
+			speedL = Math.round(speedL * 100 - accel) / 100;
+		} else if (speedL < L) {
+			speedL = Math.round(speedL * 100 + accel) / 100;
+		}*/
+
 		speedL = L;
 		speedR = R;
 		
-		/*
-		if(speedL > L) {
-			speedL = Math.round(speedL * 100 - accel) / 100;
-		} else if(speedL < L) {
-			speedL = Math.round(speedL * 100 + accel) / 100;
-		}
-		
-		if(speedR > R) {
-			speedR = Math.round(speedR * 100 - accel) / 100;
-		} else if(speedR < R) {
-			speedR = Math.round(speedR * 100 + accel) / 100;
-		}*/
-		
-		
 		// Rounding to prevent floating point addition issues
 		// Both FRONT and BACK motors need to have the same speed!!!
-		motorLF.set(speedL);
-		motorLB.set(speedL);
-		motorRF.set(speedR);
-		motorRB.set(speedR);
+		motorLF.set(speedL * percent / 100);
+		motorLB.set(speedL * percent / 100);
+		motorRF.set(speedR * percent / 100);
+		motorRB.set(speedR * percent / 100);
 	}
 
 	@Override // When test mode is on
