@@ -10,6 +10,8 @@ package org.usfirst.frc.team7299.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 public class Robot extends IterativeRobot {
 	public final int buttonA = 1;
@@ -106,6 +108,13 @@ public class Robot extends IterativeRobot {
 		double x = joystick.getX();
 		double y = joystick.getY();
 
+		double accX = accelo.getX();
+		double accY = accelo.getY();
+		double accZ = accelo.getZ();
+		
+		double gyroAngle = gyro.getAngle();
+		double gyroRate = gyro.getRate();
+		
 		double R = ((y + x) / Math.sqrt(2));
 		double L = ((y - x) / Math.sqrt(2));
 
@@ -113,6 +122,18 @@ public class Robot extends IterativeRobot {
 			slowMode = !slowMode;
 			System.out.println("SlowMode = " + slowMode);
 		}
+		
+		
+		//Literally just testing the accelerometer and the gyroscope
+		
+		if (joystick.getRawButtonReleased(buttonX)) {
+			System.out.println("Acceleration X:" + accX);
+			System.out.println("Acceleration Y:" + accY);
+			System.out.println("Acceleration Z:" + accZ);
+			System.out.println("Gyro Angle:" + gyroAngle);
+			System.out.println("Gyro Rate:" + gyroRate);
+		}
+		
 		double percent = (slowMode? 50 : 100);
 
 		motorLF.set(-L * percent / 100);
