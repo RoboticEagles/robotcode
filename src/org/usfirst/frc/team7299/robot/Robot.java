@@ -12,40 +12,33 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Spark;
 
 public class Robot extends IterativeRobot {
-	
-	// Compressor compressor = new Compressor();
-	
+	public final int buttonA = 1;
+	public final int buttonB = 2;
+	public final int buttonX = 3;
+	public final int buttonY = 4;
+	public final int buttonLB = 5;
+	public final int buttonRB = 6;
+
+	//Compressor compressor = new Compressor();
+
 	Joystick joystick = new Joystick(0);
-	
-	// DoubleSolenoid solenoid1 = new DoubleSolenoid(1,2);
-	// DoubleSolenoid solenoid2 = new DoubleSolenoid(3,4);
-	
+
+	//DoubleSolenoid solenoid1 = new DoubleSolenoid(1,2);
+	//DoubleSolenoid solenoid2 = new DoubleSolenoid(3,4);
+
 	Spark motorLF = new Spark(0);
 	Spark motorLB = new Spark(1);
 	Spark motorRF = new Spark(2);
 	Spark motorRB = new Spark(3);
-	
-	double speedL = 0;
-	double speedR = 0;
-	double speedComp = 0;
-	
-	boolean slow = false;
-	
-	final double accel = 1;
-	
+
 	boolean solenoidOn = false;
+	boolean slowMode = false;
 
 	@Override // Before anything
 	public void robotInit() {
-		System.out.println("INITIALIZED ROBOT!!");
-		/*
-		 * ### SOLENOID CODE ###
-		 * 
-		
-		compressor.setClosedLoopControl(true);
-		solenoid1.set(DoubleSolenoid.Value.kReverse);
-		solenoid2.set(DoubleSolenoid.Value.kReverse);
-		 */
+		//compressor.setClosedLoopControl(true);
+		//solenoid1.set(DoubleSolenoid.Value.kReverse);
+		//solenoid2.set(DoubleSolenoid.Value.kReverse);
 	}
 
 	@Override // Before autonomous control
@@ -53,19 +46,19 @@ public class Robot extends IterativeRobot {
 
 	@Override // During autonomous control
 	public void autonomousPeriodic() {}
-	
+
 	@Override // Before teleop control
 	public void teleopInit() {
 		System.out.println("INITIALIZED TELEOP!!");
-	} 
-	
+	}
+
 	@Override // During operator control
 	public void teleopPeriodic() {
 		/*
 		 *   ### SOLENOID CODE ###
-		 * 
+		 *
 
-		if(joystick.getRawButtonReleased(1)) {
+		if(joystick.getRawButtonReleased(buttonA)) {
 			if(solenoidOn){
 				solenoid1.set(DoubleSolenoid.Value.kReverse);
 				solenoid2.set(DoubleSolenoid.Value.kReverse);
@@ -74,51 +67,57 @@ public class Robot extends IterativeRobot {
 				solenoid2.set(DoubleSolenoid.Value.kForward);
 			}
 			solenoidOn = !solenoidOn;
-		}
-
-		if(joystick.getRawButtonReleased(2)) {
-			if(compressor.enabled()) {
-				compressor.stop();
-			} else {
-				compressor.start();
-			}
-		}
-		*/
-		
-		double x = joystick.getX();
-		double y = joystick.getY();
-		
-		double R = (y - x) / Math.sqrt(2);
-		double L = (y + x) / Math.sqrt(2);
-		
-		if(joystick.getRawButtonReleased(4)) {
-			slow = !slow;
-		}
-		double percent = (slow? 50 : 100);
-		/*
-		if(speedR > R) {
-			speedR = Math.round(speedR * 100 - accel) / 100;
-		} else if (speedR < R) {
-			speedR = Math.round(speedR * 100 - accel) / 100;
-		}
-
-		if(speedL > L) {
-			speedL = Math.round(speedL * 100 - accel) / 100;
-		} else if (speedL < L) {
-			speedL = Math.round(speedL * 100 + accel) / 100;
 		}*/
 
-		speedL = L;
-		speedR = R;
-		
-		// Rounding to prevent floating point addition issues
-		// Both FRONT and BACK motors need to have the same speed!!!
-		motorLF.set(speedL * percent / 100);
-		motorLB.set(speedL * percent / 100);
-		motorRF.set(speedR * percent / 100);
-		motorRB.set(speedR * percent / 100);
+		double x = joystick.getX();
+		double y = joystick.getY();
+
+		double R = ((y + x) / Math.sqrt(2));
+		double L = ((y - x) / Math.sqrt(2));
+
+		if(joystick.getRawButtonReleased(buttonY)) {
+			slowMode = !slowMode;
+			System.out.println("SlowMode = " + slowMode);
+		}
+		double percent = (slowMode? 50 : 100);
+
+		motorLF.set(-L * percent / 100);
+		motorLB.set(-L * percent / 100);
+		motorRF.set(-R * percent / 100);
+		motorRB.set(-R * percent / 100);
 	}
 
 	@Override // When test mode is on
-	public void testPeriodic() {}
+	public void testPeriodic() {
+		/*
+		 *   ### SOLENOID TEST CODE ###
+		 *
+
+		if(joystick.getRawButtonReleased(buttonA)) {
+			if(solenoidOn){
+				solenoid1.set(DoubleSolenoid.Value.kReverse);
+				solenoid2.set(DoubleSolenoid.Value.kReverse);
+			} else {
+				solenoid1.set(DoubleSolenoid.Value.kForward);
+				solenoid2.set(DoubleSolenoid.Value.kForward);
+			}
+			solenoidOn = !solenoidOn;
+		}*/
+		double x = joystick.getX();
+		double y = joystick.getY();
+
+		double R = ((y + x) / Math.sqrt(2));
+		double L = ((y - x) / Math.sqrt(2));
+
+		if(joystick.getRawButtonReleased(buttonY)) {
+			slowMode = !slowMode;
+			System.out.println("SlowMode = " + slowMode);
+		}
+		double percent = (slowMode? 50 : 100);
+
+		motorLF.set(-L * percent / 100);
+		motorLB.set(-L * percent / 100);
+		motorRF.set(-R * percent / 100);
+		motorRB.set(-R * percent / 100);
+	}
 }
