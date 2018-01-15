@@ -30,6 +30,7 @@ public class Robot extends IterativeRobot {
 	Spark motorLB = new Spark(1);
 	Spark motorRF = new Spark(2);
 	Spark motorRB = new Spark(3);
+	Spark conveyor = new Spark(4);
 
 	boolean solenoidOn = false;
 	boolean slowMode = false;
@@ -85,6 +86,16 @@ public class Robot extends IterativeRobot {
 		motorLB.set(-L * percent / 100);
 		motorRF.set(-R * percent / 100);
 		motorRB.set(-R * percent / 100);
+		
+		if(joystick.getRawButton(buttonA)) {
+			conveyor.set(1);
+		}
+		else if (joystick.getRawButton(buttonB)) {
+			conveyor.set(-1);
+		}
+		else {
+			conveyor.set(0);
+		}
 	}
 
 	@Override // When test mode is on
