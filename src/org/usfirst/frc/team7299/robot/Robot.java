@@ -31,6 +31,7 @@ public class Robot extends IterativeRobot {
 	Spark motorRF = new Spark(2);
 	Spark motorRB = new Spark(3);
 	Spark conveyor = new Spark(4);
+	Spark wheel = new Spark(5);
 
 	boolean solenoidOn = false;
 	boolean slowMode = false;
@@ -88,13 +89,20 @@ public class Robot extends IterativeRobot {
 		motorRB.set(-R * percent / 100);
 		
 		if(joystick.getRawButton(buttonA)) {
-			conveyor.set(1);
+			conveyor.set(0.5);
 		}
 		else if (joystick.getRawButton(buttonB)) {
-			conveyor.set(-1);
+			conveyor.set(-0.5);
 		}
 		else {
 			conveyor.set(0);
+		}
+		
+		if(joystick.getRawButton(buttonX)) {
+			wheel.set(1);
+		}
+		else {
+			wheel.set(0);
 		}
 	}
 
